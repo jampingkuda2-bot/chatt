@@ -39,34 +39,44 @@ app.get('/chat.html', requireLogin, (req, res) => {
 
 // ---------- API: registrasi ----------
 app.post('/api/register', async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Username dan password wajib diisi' });
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username dan password wajib diisi' });
+    }
+    if (username.length < 3) {
+      return res.status(400).json({ error: 'Username minimal 3 karakter' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password minimal 6 karakter' });
+    }
+    if (db.findUser(username)) {
+      return res.status(400).json({ error: 'Username sudah dipakai' });
+    }
+    const hash = await bcrypt.hash(password, 10);
+    db.addUser({ username, password: hash, createdAt: Date.now() });
+    req.session.username = username;
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Register error:', err);
+    res.status(500).json({ error: 'Gagal mendaftar, coba lagi (' + err.message + ')' });
   }
-  if (username.length < 3) {
-    return res.status(400).json({ error: 'Username minimal 3 karakter' });
-  }
-  if (password.length < 6) {
-    return res.status(400).json({ error: 'Password minimal 6 karakter' });
-  }
-  if (db.findUser(username)) {
-    return res.status(400).json({ error: 'Username sudah dipakai' });
-  }
-  const hash = await bcrypt.hash(password, 10);
-  db.addUser({ username, password: hash, createdAt: Date.now() });
-  req.session.username = username;
-  res.json({ ok: true });
 });
 
 // ---------- API: login ----------
 app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = db.findUser(username || '');
-  if (!user) return res.status(400).json({ error: 'Username tidak ditemukan' });
-  const match = await bcrypt.compare(password || '', user.password);
-  if (!match) return res.status(400).json({ error: 'Password salah' });
-  req.session.username = user.username;
-  res.json({ ok: true });
+  try {
+    const { username, password } = req.body;
+    const user = db.findUser(username || '');
+    if (!user) return res.status(400).json({ error: 'Username tidak ditemukan' });
+    const match = await bcrypt.compare(password || '', user.password);
+    if (!match) return res.status(400).json({ error: 'Password salah' });
+    req.session.username = user.username;
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Gagal login, coba lagi (' + err.message + ')' });
+  }
 });
 
 // ---------- API: siapa saya ----------
