@@ -3,7 +3,15 @@ const path = require('path');
 
 const DB_FILE = path.join(__dirname, 'data', 'db.json');
 
+function ensureDataDir() {
+  const dir = path.dirname(DB_FILE);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
 function readDB() {
+  ensureDataDir();
   if (!fs.existsSync(DB_FILE)) {
     const initial = { users: [], messages: [] };
     fs.writeFileSync(DB_FILE, JSON.stringify(initial, null, 2));
@@ -13,6 +21,7 @@ function readDB() {
 }
 
 function writeDB(data) {
+  ensureDataDir();
   fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
 }
 
