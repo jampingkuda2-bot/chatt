@@ -1,0 +1,9 @@
+{
+  "name": "ChatApp",
+  "short_name": "ChatApp",
+  "start_url": "/login.html",
+  "display": "standalone",
+  "background_color": "#07080F",
+  "theme_color": "#0A84FF",
+  "icons": []
+}
