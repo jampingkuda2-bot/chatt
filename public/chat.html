@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Chat</title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="manifest" href="/manifest.json">
+</head>
+<body>
+  <div class="aurora"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>
+  <div class="chat-wrap">
+    <header class="chat-header">
+      <span id="meLabel">Chat</span>
+      <button id="logoutBtn">Keluar</button>
+    </header>
+    <div class="chat-body">
+      <aside class="online-list">
+        <h3>Online</h3>
+        <ul id="onlineUl"></ul>
+      </aside>
+      <main class="messages" id="messages"></main>
+    </div>
+    <form id="msgForm" class="msg-form">
+      <input type="text" id="msgInput" placeholder="Tulis pesan..." autocomplete="off" required>
+      <button type="submit">➤</button>
+    </form>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
+</body>
+</html>
